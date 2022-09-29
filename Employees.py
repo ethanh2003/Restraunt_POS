@@ -1,11 +1,11 @@
 from ast import Break
+from tokenize import Double
+from unicodedata import decimal
 import mysql.connector
 
 
 from tkinter import *
-top = Tk()
-menu()
-top.mainloop()
+
 
 con = mysql.connector.connect(
     host="localhost", user="root", password="root", database="Employees")
@@ -33,48 +33,47 @@ def check_employee(employee_id):
     else:
         return False
     
-def createEmployee(): 
-    id = tk.Text(frame,"Enter Employee ID",
-                    height = 5,
-                    width = 20)
-    
-    id.pack()
-    
-         # Button Creation
-    Submit = tk.Button(frame,
-                            text = "Submit", 
-                            command = printInput)
-    printButton.pack()
-    
-    id = input("Enter Employee Id : ")
- 
-    # Checking if Employee with given Id
-    # Already Exist or Not
-    if(check_employee(id) == True):
-        print("Employee aready exists\nTry Again\n")
-        menu()
-     
-    else:
-        fName = input("Enter Employee First Name : ")
-        lName = input("Enter Employee Last Name : ")
-        pin = input("Enter Employee Pin : ")
-        payRate = input("Enter Employee payRate : ")
-        accessLevel = input("Enter Employee Access Level: ")
-        jobTitle = input("Enter Job Title")
+def createEmployee():     
+    def newEmployee():
         newEmp = (id, fName, lName, pin, payRate, accessLevel, jobTitle)
- 
-        # Inserting Employee details in the Employee
-        # Table
-        sql = 'insert into employeedata values(%s,%s,%s,%s,%s,%s,%s)'
-        c = con.cursor()
- 
-        # Executing the SQL Query
-        c.execute(sql, newEmp)
- 
-        # commit() method to make changes in the table
-        con.commit()
-        print("Employee Added Successfully ")
-        menu()
+        if(check_employee(id) == True):
+            top.window("Employee aready exists\nTry Again\n")
+        else:
+            sql = 'insert into employeedata values(%s,%s,%s,%s,%s,%s,%s)'
+            c = con.cursor()
+    
+            # Executing the SQL Query
+            c.execute(sql, newEmp)
+    
+            # commit() method to make changes in the table
+            con.commit()
+            print("Employee Added Successfully ")
+    top = Tk()
+    L1 = Label(top, text = "New User id").grid(row=0,column=0)
+    idE = Entry(top, bd = 5).grid(row=0,column=1)
+    L2 = Label(top, text = "First Name").grid(row=1,column=0)
+    fNameE = Entry(top, bd = 5).grid(row=1,column=1)
+    L3 = Label(top, text = "Last Name").grid(row=2,column=0)
+    lNameE = Entry(top, bd = 5).grid(row=2,column=1)
+    L4 = Label(top, text = "Pin").grid(row=3,column=0)
+    pinE = Entry(top, bd = 5).grid(row=3,column=1)
+    L4 = Label(top, text = "payRate").grid(row=4,column=0)
+    payRateE = Entry(top, bd = 5).grid(row=4,column=1)
+    L5 = Label(top, text = "Access Level").grid(row=5,column=0)
+    accessLevelE = Entry(top, bd = 5).grid(row=5,column=1)
+    L5 = Label(top, text = "Job Title").grid(row=6,column=0)
+    jobTitleE = Entry(top, bd = 5).grid(row=6,column=1)
+    btn = Button(top ,text="Submit", command= newEmployee).grid(row=7,column=1)
+    id=int(idE.get())
+    fName=fNameE.get()
+    lName=lNameE.get()
+    pin=int(pinE.get())
+    payRate=decimal(payRateE.get())
+    accessLevel=int(accessLevelE.get())
+    jobTitle=jobTitleE.get()
+    
+    
+        
 def deleteEmployee():
 
     id = input("Enter Employee Id : ")
@@ -83,7 +82,7 @@ def deleteEmployee():
     # Exist or Not
     if(check_employee(id) == False):
         print("Employee does not  exists\nTry Again\n")
-        menu()
+        
      
     else:
          
@@ -99,7 +98,7 @@ def deleteEmployee():
         # the table
         con.commit()
         print("Employee Removed")
-        menu()
+        
 def editEmployee():
     id = int(input("Enter Employee Id"))
  
@@ -107,7 +106,7 @@ def editEmployee():
     # Exist or Not
     if(check_employee(id) == False):
         print("Employee does not  exists\nTry Again\n")
-        menu()
+        
     else:
         #pin accessLevel jobTitle payRate
         selection = int(input("Select 1 to edit pin /n Select 2 to edit accessLevel /n Select 3 to edit job title /n Select 4 to edit pay rate"))
@@ -138,7 +137,7 @@ def editEmployee():
         # commit() method to make changes in the table
         con.commit()
         print("Employee Promoted")
-        menu()
+        
 def Display_Employees():
      
     # query to select all rows from
@@ -161,8 +160,10 @@ def Display_Employees():
         print("-----------------------------\
         -------------------------------------\
         -----------------------------------")
-    menu()
-def menu():
-    B = Button(top, text = "Add Employee", command = createEmployee())
+    
 
 
+top = Tk()
+B = Button(top, text = "Add Employee", command = createEmployee)
+B.place(x = 50,y = 50)
+top.mainloop()

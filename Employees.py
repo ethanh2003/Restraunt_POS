@@ -1,4 +1,12 @@
+from ast import Break
 import mysql.connector
+
+
+from tkinter import *
+top = Tk()
+menu()
+top.mainloop()
+
 con = mysql.connector.connect(
     host="localhost", user="root", password="root", database="Employees")
 
@@ -6,7 +14,7 @@ def check_employee(employee_id):
  
     # Query to select all Rows f
     # rom employee Table
-    sql = 'select * from empd where id=%s'
+    sql = 'select * from employeedata where id=%s'
  
     # making cursor buffered to make
     # rowcount method work properly
@@ -26,6 +34,18 @@ def check_employee(employee_id):
         return False
     
 def createEmployee(): 
+    id = tk.Text(frame,"Enter Employee ID",
+                    height = 5,
+                    width = 20)
+    
+    id.pack()
+    
+         # Button Creation
+    Submit = tk.Button(frame,
+                            text = "Submit", 
+                            command = printInput)
+    printButton.pack()
+    
     id = input("Enter Employee Id : ")
  
     # Checking if Employee with given Id
@@ -45,7 +65,7 @@ def createEmployee():
  
         # Inserting Employee details in the Employee
         # Table
-        sql = 'insert into empd values(%s,%s,%s,%s,%s,%s,%s)'
+        sql = 'insert into employeedata values(%s,%s,%s,%s,%s,%s,%s)'
         c = con.cursor()
  
         # Executing the SQL Query
@@ -109,8 +129,8 @@ def editEmployee():
  
         # Query to Update Salary of Employee with
         # given Id
-        sql = 'update empd set salary=%s where id=%s'
-        d = (t, Id)
+        sql = 'update employeedata set salary=%s where id=%s'
+        d = (t, id)
  
         # Executing the SQL Query
         c.execute(sql, d)
@@ -119,4 +139,30 @@ def editEmployee():
         con.commit()
         print("Employee Promoted")
         menu()
-    
+def Display_Employees():
+     
+    # query to select all rows from
+    # Employee Table
+    sql = 'select * from employeedata'
+    c = con.cursor()
+     
+    # Executing the SQL Query
+    c.execute(sql)
+     
+    # Fetching all details of all the
+    # Employees
+    r = c.fetchall()
+    for i in r:
+        print("Employee Id : ", i[0])
+        print("Employee Name : ", i[1], " " , i[2])
+        print("Employee payRate : ", i[6])
+        print("Employee access level : ", i[4])
+        print("Employee Job Title : ", i[5])
+        print("-----------------------------\
+        -------------------------------------\
+        -----------------------------------")
+    menu()
+def menu():
+    B = Button(top, text = "Add Employee", command = createEmployee())
+
+
